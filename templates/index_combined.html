@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon_1.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Brain Tumor Detection</title>
+</head>
+<body>
+    <h1>Upload an MRI Image</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <input id="file-upload" type="file" name="image" accept="image/*" required>
+        <button type="submit">Predict</button>
+    </form>
+    <script>
+        const fileInput = document.getElementById('file-upload');
+    
+        fileInput.addEventListener('change', function(){
+            fileChosen.textContent = this.files[0].name;
+        });
+    </script>
+</body>
+
+
+   
+
+
+</html>

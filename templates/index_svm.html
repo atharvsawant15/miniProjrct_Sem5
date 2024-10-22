@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+</head>
+<body style="align-content: center">
+    <h1>Brain Tumor Detection</h1>
+    <h2>Support Vector Machine (SVM)</h2>
+
+    {% if result %}
+        <h2>Prediction Result</h2>
+        <ul>
+            {% for class_name, prob in result.items() %}
+            <li>{{ class_name }}: {{ prob }}%</li>
+            {% endfor %}
+        </ul>
+        <a href="/">Go Back</a>
+    {% else %}
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="submit">Upload and Predict</button>
+        </form>
+    {% endif %}
+</body>
+</html>

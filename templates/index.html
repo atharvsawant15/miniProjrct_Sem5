@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            margin: 20px auto;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 300px;
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Brain Tumor Detection</h1>
+    <form id="upload-form">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload and Predict</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const fileInput = this.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+
+            // Display the uploaded image on the page
+            if (file) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = URL.createObjectURL(file);
+                imgPreview.id = 'uploaded-image';
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';  // Clear previous results
+                resultDiv.appendChild(imgPreview);  // Display uploaded image
+            }
+
+            // Send the image for prediction
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            displayResult(result);
+        });
+
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+
+            if (result.error) {
+                resultDiv.innerHTML += `<p class="error">${result.error}</p>`;
+            } else {
+                let probabilities = Object.entries(result.probabilities)
+                    .map(([type, prob]) => `${type}: ${prob.toFixed(2)}%`).join('<br>');
+                resultDiv.innerHTML += `
+                    <h3>Predicted Tumor Type: ${result.predicted_tumor_type}</h3>
+                    <h4>Probabilities:</h4>
+                    <p>${probabilities}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

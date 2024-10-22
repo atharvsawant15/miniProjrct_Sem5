@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon_1.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
+    <title>Brain Tumor Detection Result</title>
+</head>
+<body>
+    <div class="container image-container">
+        <h3>Uploaded Image</h3>
+        {% if image_filename %}
+            <img  class="brain" src="{{ url_for('static', filename='uploads/' + image_filename) }}" alt="Uploaded MRI" width="300">
+        {% else %}
+            <p>No image uploaded</p>
+        {% endif %}
+    </div>
+    
+    <div class="container total-prediction">
+        <h3>Prediction Result</h3>
+        <h1>{{ cnn_result.highest_prediction }}</h1> <!-- , {{logistic_result.highest_prediction}}, {{ svm_result.highest_prediction }}-->
+        <!-- <button href="#" class="details" >More Details</button> -->
+    </div>    
+    
+        <div class="container cnn-prediction">
+            {% if cnn_result %}
+                <h2>Convolutional Neural Netwrok Prediction: {{ cnn_result.highest_prediction }}</h2>
+                <ul>
+                    {% for class_name, probability in cnn_result.probabilities.items() %}
+                        <li>{{ class_name }}: {{ probability }}%</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>CNN prediction failed or unavailable.</p>
+            {% endif %}
+        </div>
+        
+        <div class="container logistic-prediction">
+            {% if logistic_result %}
+                <h2>Logistic Regression Prediction: {{ logistic_result.highest_prediction }}</h2>
+                <ul>
+                    {% for class_name, probability in logistic_result.probabilities.items() %}
+                        <li>{{ class_name }}: {{ probability }}%</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Logistic Regression prediction failed or unavailable.</p>
+            {% endif %}
+        </div>
+        
+        <div class="container svm-prediction">
+            {% if svm_result %}
+            <h2>Support Vector Machine Prediction: {{ svm_result.highest_prediction }}</h2>
+            <ul>
+                {% for label, prob in svm_result.probabilities.items() %}
+                    <li>{{ label }}: {{ prob }}%</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        </div>
+    
+    
+    <a href="/">Go Back</a>
+</body>
+</html>
